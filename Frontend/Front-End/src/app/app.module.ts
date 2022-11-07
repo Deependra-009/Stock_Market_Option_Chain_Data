@@ -14,6 +14,7 @@ import { NavbarComponent } from './Components/navbar/navbar.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { BankNiftyComponent } from './Components/bank-nifty/bank-nifty.component';
+import { NiftyDataServiceService } from 'src/services/NiftyService/nifty-data-service.service';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,7 @@ import { BankNiftyComponent } from './Components/bank-nifty/bank-nifty.component
     
     
   ],
-  providers: [BankNiftyComponent,NiftydataComponent],
+  providers: [NiftydataComponent,BankNiftyComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

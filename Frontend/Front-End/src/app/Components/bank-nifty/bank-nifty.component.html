@@ -2,7 +2,7 @@
     <mat-card>
         <div class="refresh">
             <label>Refresh</label>
-            <mat-icon class="refreshButton" (click)="getData()" aria-hidden="false" aria-label="Example home icon"
+            <mat-icon class="refreshButton" (click)="refreshData()" aria-hidden="false" aria-label="Example home icon"
                 fontIcon="refresh"></mat-icon>
 
         </div>
@@ -38,7 +38,7 @@
                     <tr *ngFor="let c of Data">
                         <td>{{c.CEOI}}</td>
                         <td>{{c.PCR}}</td>
-                        <td [ngStyle]="{color:getColor(c.PCR)}" class="pcr-data">{{c.PCR>0?"BUY":"SELL"}}</td>
+                        <td [ngStyle]="{color:getColor(c.PCR)}" class="pcr-data">{{c.PCR>1?"BUY":"SELL"}}</td>
                         <td>{{c.PEOI}}</td>
                         <td>{{c.Time}}</td>
                     </tr>
