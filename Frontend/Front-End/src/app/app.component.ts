@@ -1,4 +1,4 @@
-import {  Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { interval } from 'rxjs';
 import { BankNiftyServiceService } from 'src/services/BankNiftyService/bank-nifty-service.service';
 import { NiftyDataServiceService } from 'src/services/NiftyService/nifty-data-service.service';
@@ -12,33 +12,37 @@ import { NiftyDataServiceService } from 'src/services/NiftyService/nifty-data-se
 export class AppComponent {
 
   constructor(
-    private niftyData:NiftyDataServiceService,
-    private bankNiftyData:BankNiftyServiceService
-  ){  }
+    private niftyData: NiftyDataServiceService,
+    private bankNiftyData: BankNiftyServiceService
+  ) { }
 
   ngOnInit(): void {
 
-    const UpdateData=interval(20000);
+    const UpdateData=interval(180000);
     UpdateData.subscribe((data)=>{
-      this.niftyData.updateNiftyAllData(true);
-      this.bankNiftyData.updateBankNiftyAllData(true);
+      this.getData();
     })
 
-    
+
+  }
+
+  getData() {
+    this.niftyData.updateNiftyAllData(true);
+    this.bankNiftyData.updateBankNiftyAllData(true);
   }
 
 
 
- 
 
 
-  
 
 
-  
 
 
-  
+
+
+
+
 
 
 }

@@ -32,13 +32,7 @@ export class BankNiftyComponent implements OnInit {
     const o3$ = observer$[2];
     o1$.subscribe((data: Boolean) => this.loading = data);
     o2$.subscribe((data: Boolean) => this.loaded = data);
-    o3$.subscribe((data: any) => this.Data = data);
-
-  }
-
-  refreshData() {
-
-
+    o3$.subscribe((data: any) => {this.Data = data;localStorage.setItem("banknifty",data); });
 
   }
 

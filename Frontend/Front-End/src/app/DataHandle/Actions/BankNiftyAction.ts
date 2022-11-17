@@ -9,7 +9,11 @@ export class BankNiftyRequestAction{
 export class BankNiftySuccessAction{
     readonly type=BANKNIFTY_SUCCESS;
 
-    constructor(public payload?:{Data:any[]}){
+    constructor(public payload?:{Data:any[],BankNiftyPCRData:any[],BankNiftyOIData:any[]}){
 
     }
 }
+
+//---------------------------------
+
+

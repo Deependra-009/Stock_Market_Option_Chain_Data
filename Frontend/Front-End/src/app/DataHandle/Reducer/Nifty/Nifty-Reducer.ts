@@ -1,5 +1,5 @@
 import { Action } from "../../Actions";
-import { NIFTY_PCR_CHART_REQUEST, NIFTY_PCR_CHART_SUCCESS, NIFTY_REQUEST, NIFTY_SUCCESS } from "../../Actions/NiftyActions";
+import {  NIFTY_REQUEST, NIFTY_SUCCESS } from "../../Actions/NiftyActions";
 
 export interface NiftyReducerState{
     loading:boolean;
@@ -29,18 +29,11 @@ export function NiftyReducer(state=initalState,action:Action){
 
         case NIFTY_SUCCESS:{
             const newData=action.payload.Data;
-            
-            
-            return {...state,loading:false,loaded:true,NiftyPCRData:newData};
+            const newPCRData=action.payload.NiftyPCRData;
+            const newOIData=action.payload.NiftyOIData;
+            return {...state,loading:false,loaded:true,NiftyPCRData:newData,NiftyPCRChartData:newPCRData,NiftyOIChartData:newOIData};
         }
-        case NIFTY_PCR_CHART_REQUEST:{
-            return {...state,loading:true,loaded:false};
-        }
-        case NIFTY_PCR_CHART_SUCCESS:{
-            const newPCRData=action.payload.PCRData;
-            const newOIData=action.payload.OIData;
-            return {...state,loading:false,loaded:true,NiftyPCRChartData:newPCRData,NiftyOIChartData:newOIData}
-        }
+        
 
         default:{
             return state;

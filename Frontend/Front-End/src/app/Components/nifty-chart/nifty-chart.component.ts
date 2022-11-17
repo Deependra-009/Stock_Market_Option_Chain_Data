@@ -68,30 +68,14 @@ export class NiftyChartComponent implements OnInit {
 
   ngOnInit(): void {
 
-    const Observer$ = this.niftyService.getNiftyData();
+    const ObserverNifty$ = this.niftyService.getNiftyData();
 
-    const ob1$ = Observer$[0];
-    const ob2$=Observer$[1];
-    const ob3$ = Observer$[3];
-    const ob4$=Observer$[4];
-
-    ob1$.subscribe(
-      (data:Boolean)=>this.loading=data
-    )
-    ob2$.subscribe(
-      (data:Boolean)=>this.loaded=data
-    )
-
-    ob3$.subscribe(
-      (data)=>{
-        this.PCRChartData=data;
-      }
-    )
-    ob4$.subscribe(
-      (data)=>{
-        this.OICallPUTChartData=data;
-      }
-    )
+    const ncob2$=ObserverNifty$[1];
+    const ncob3$ = ObserverNifty$[3];
+    const ncob4$=ObserverNifty$[4];
+    ncob2$.subscribe((data)=>{this.loaded=data; })
+    ncob3$.subscribe((data)=>{this.PCRChartData=data;})
+    ncob4$.subscribe((data)=>{this.OICallPUTChartData=data;})
 
   }
 

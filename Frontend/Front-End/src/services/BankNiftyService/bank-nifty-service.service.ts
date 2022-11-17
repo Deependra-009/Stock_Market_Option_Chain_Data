@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { combineLatest, Observable, pluck, take } from 'rxjs';
+import { combineLatest, delay, Observable, pluck, take } from 'rxjs';
 import { BankNiftyRequestAction, BankNiftySuccessAction } from 'src/app/DataHandle/Actions/BankNiftyAction';
-import { getBankNiftyData, getBankNiftyLoaded, getBankNiftyLoading, getBankNiftyPCR, RootReducerState } from 'src/app/DataHandle/Reducer';
+import { getBankNiftyData, getBankNiftyLoaded, getBankNiftyLoading, getBankNiftyOIChartData, getBankNiftyPCR, getBankNiftyPCRChartData, RootReducerState } from 'src/app/DataHandle/Reducer';
 import { BankNiftyPCR } from 'src/app/Models/BankNifty';
 import { FetchServiceService } from '../FetchAPI/fetch-service.service';
 
@@ -12,6 +12,8 @@ import { FetchServiceService } from '../FetchAPI/fetch-service.service';
 export class BankNiftyServiceService {
 
   AllBankNiftyData = new Array<BankNiftyPCR>();
+  AllBankNiftyChartPCRData = new Array<any>();
+  AllBankNiftyChartOIData = new Array<any>();
 
 
 
@@ -22,59 +24,63 @@ export class BankNiftyServiceService {
 
   ngOnInit(): void { }
 
-  getBankNiftyData():[Observable<Boolean>,Observable<Boolean>,Observable<any>]{
+  getBankNiftyData(): [Observable<Boolean>, Observable<Boolean>, Observable<any>, Observable<any>, Observable<any>] {
     const loading$ = this.store.select(getBankNiftyLoading);
     const loaded$ = this.store.select(getBankNiftyLoaded);
-    const bankNiftyData=this.store.select(getBankNiftyPCR);
-    return [loading$,loaded$,bankNiftyData];
+    const bankNiftyData = this.store.select(getBankNiftyPCR);
+    const bankNiftyChartPCRData = this.store.select(getBankNiftyPCRChartData);
+    const bankNiftyChartOIData = this.store.select(getBankNiftyOIChartData);
+    return [loading$, loaded$, bankNiftyData, bankNiftyChartPCRData, bankNiftyChartOIData];
   }
 
-  updateBankNiftyAllData(force=false){
+  updateBankNiftyAllData(force = false) {
 
 
     const loading$ = this.store.select(getBankNiftyLoading);
     const loaded$ = this.store.select(getBankNiftyLoaded);
-    const bankNiftyData=this.store.select(getBankNiftyPCR);
-    bankNiftyData.pipe(
-      take(1)
-    ).subscribe((data)=>{
-      this.AllBankNiftyData=data;
-    })
-    // console.log(force);
-    
-    combineLatest([loading$, loaded$])
-    .pipe(
-      take(1)
-    )
-    .subscribe(
-      (data) => {
-        if ((!data[0] && !data[1] )|| force) {
-          this.store.dispatch(new BankNiftyRequestAction())
-          this.service.getBankNiftyData()
-            .pipe(
-              pluck('filtered')
-            )
-            .subscribe(
-              (res: any) => {
-                // console.log(res);
-                this.convertData(res);
-               
-              },
-              (error) => {
-                console.log(error);
+    const bankNiftyData = this.store.select(getBankNiftyPCR);
+    const bankNiftyChartPCRData = this.store.select(getBankNiftyPCRChartData);
+    const bankNiftyChartOIData = this.store.select(getBankNiftyOIChartData);
 
-              }
-            )
+    bankNiftyData.pipe(take(1)).subscribe((data) => this.AllBankNiftyData = data).unsubscribe();
+    bankNiftyChartPCRData.pipe(take(1)).subscribe((data) => this.AllBankNiftyChartPCRData = data).unsubscribe();
+    bankNiftyChartOIData.pipe(take(1)).subscribe((data) => this.AllBankNiftyChartOIData = data).unsubscribe();
+
+    combineLatest([loading$, loaded$])
+      .pipe(
+        take(1)
+      )
+      .subscribe(
+        (data) => {
+          if ((!data[0] && !data[1]) || force) {
+            this.store.dispatch(new BankNiftyRequestAction())
+            this.service.getBankNiftyData()
+              .pipe(
+                pluck('filtered'),
+
+              )
+              .subscribe(
+                (res: any) => {
+                  this.convertData(res);
+
+                },
+                (error) => {
+                  console.log(error);
+
+                }
+              )
+          }
         }
-      }
-    )
+      )
 
   }
 
   convertData(tempData: any) {
-    
-    if(tempData==undefined) return;
-    
+
+    if (tempData == undefined) return;
+
+
+
     let data = {
       totalCallOI: 0,
       totalCallVolume: 0,
@@ -93,13 +99,14 @@ export class BankNiftyServiceService {
     data.PCRVOLUME = (Number(data.totalPutVolume) / Number(data.totalCallVolume));
     data.time = this.formatAMPM(new Date());
 
-    // console.log(data);
-    // console.log(data);
-    this.AllBankNiftyData=[...this.AllBankNiftyData,data]
-    // console.log(this.AllNiftyData);
 
-    this.store.dispatch(new BankNiftySuccessAction({Data:this.AllBankNiftyData}))
+    this.AllBankNiftyData = [...this.AllBankNiftyData, data]
+    this.AllBankNiftyChartPCRData = [...this.AllBankNiftyChartPCRData, [data.time, data.PCROI]];
+    this.AllBankNiftyChartOIData = [...this.AllBankNiftyChartOIData, [data.time, data.totalCallOI, data.totalPutOI]];
 
+
+
+    this.store.dispatch(new BankNiftySuccessAction({ Data: this.AllBankNiftyData, BankNiftyPCRData: this.AllBankNiftyChartPCRData, BankNiftyOIData: this.AllBankNiftyChartOIData }))
   }
 
   formatAMPM(date: Date) {

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { NiftyPCR, NiftyPCRChart } from './../../app/Models/Nifty';
 import { combineLatest, delay, Observable, pluck, retry, take } from 'rxjs';
-import { NiftyPCRChartRequestAction, NiftyPCRChartSuccessAction, NiftyRequestAction, NiftySuccessAction } from 'src/app/DataHandle/Actions/NiftyActions';
+import { NiftyRequestAction, NiftySuccessAction } from 'src/app/DataHandle/Actions/NiftyActions';
 import { getNiftyLoaded, getNiftyLoading, getNiftyOIChartData, getNiftyPCR, getNiftyPCRChartData, RootReducerState } from 'src/app/DataHandle/Reducer';
 import { FetchServiceService } from '../FetchAPI/fetch-service.service';
 
@@ -24,76 +24,62 @@ export class NiftyDataServiceService {
 
   ngOnInit(): void { }
 
-  getNiftyData():[Observable<Boolean>,Observable<Boolean>,Observable<any>,Observable<any>,Observable<any>]{
+  getNiftyData(): [Observable<Boolean>, Observable<Boolean>, Observable<any>, Observable<any>, Observable<any>] {
     const loading$ = this.store.select(getNiftyLoading);
     const loaded$ = this.store.select(getNiftyLoaded);
-    const niftyData=this.store.select(getNiftyPCR);
-    const niftyChartPCRData=this.store.select(getNiftyPCRChartData);
-    const niftyChartOIData=this.store.select(getNiftyOIChartData);
+    const niftyData = this.store.select(getNiftyPCR);
+    const niftyChartPCRData = this.store.select(getNiftyPCRChartData);
+    const niftyChartOIData = this.store.select(getNiftyOIChartData);
 
-    return [loading$,loaded$,niftyData,niftyChartPCRData,niftyChartOIData];
+    return [loading$, loaded$, niftyData, niftyChartPCRData, niftyChartOIData];
   }
 
-  updateNiftyAllData(force=false){
+  updateNiftyAllData(force = false) {
 
     const loading$ = this.store.select(getNiftyLoading);
     const loaded$ = this.store.select(getNiftyLoaded);
-    const niftyData=this.store.select(getNiftyPCR);
-    const niftyChartPCRData=this.store.select(getNiftyPCRChartData);
-    const niftyChartOIData=this.store.select(getNiftyOIChartData);
+    const niftyData = this.store.select(getNiftyPCR);
+    const niftyChartPCRData = this.store.select(getNiftyPCRChartData);
+    const niftyChartOIData = this.store.select(getNiftyOIChartData);
 
-
-    niftyData.pipe(
-      take(1)
-    ).subscribe((data)=>{
-      this.AllNiftyData=data;
-    })
-    niftyChartPCRData.pipe(
-      take(1)
-    ).subscribe((data)=>{
-      this.AllNiftyChartPCRData=data;
-    })
-    niftyChartOIData.pipe(
-      take(1)
-    ).subscribe((data)=>{
-      this.AllNiftyChartOIData=data;
-    })
+    niftyData.pipe(take(1)).subscribe((data) => this.AllNiftyData = data).unsubscribe();
+    niftyChartPCRData.pipe(take(1)).subscribe((data) => this.AllNiftyChartPCRData = data).unsubscribe();
+    niftyChartOIData.pipe(take(1)).subscribe((data) => this.AllNiftyChartOIData = data).unsubscribe();
 
 
     // console.log(force);
-    
-    combineLatest([loading$, loaded$])
-    .pipe(
-      take(1)
-    )
-    .subscribe(
-      (data) => {
-        if ((!data[0] && !data[1] )|| force) {
-          this.store.dispatch(new NiftyRequestAction())
-          this.service.getNiftyData()
-            .pipe(
-              pluck('filtered')
-            )
-            .subscribe(
-              (res: any) => {
-                // console.log(res);
-                this.convertData(res);
-               
-              },
-              (error) => {
-                console.log(error);
 
-              }
-            )
+    combineLatest([loading$, loaded$])
+      .pipe(
+        take(1)
+      )
+      .subscribe(
+        (data) => {
+          if ((!data[0] && !data[1]) || force) {
+            this.store.dispatch(new NiftyRequestAction())
+            this.service.getNiftyData()
+              .pipe(
+                pluck('filtered')
+              )
+              .subscribe(
+                (res: any) => {
+                  this.convertData(res);
+
+                },
+                (error) => {
+                  console.log(error);
+
+                }
+              )
+          }
         }
-      }
-    )
+      ).unsubscribe();
 
   }
 
   convertData(tempData: any) {
-    if(tempData==undefined) return;
-    
+    if (tempData == undefined) return;
+
     let data = {
       totalCallOI: 0,
       totalCallVolume: 0,
@@ -105,11 +91,6 @@ export class NiftyDataServiceService {
 
     }
 
-    let chartData = {
-      PCROI: 1,    
-      time: ""
-
-    }
     data.totalCallOI = tempData.CE.totOI;
     data.totalPutOI = tempData.PE.totOI;
     data.totalCallVolume = tempData.CE.totVol;
@@ -118,14 +99,14 @@ export class NiftyDataServiceService {
     data.PCRVOLUME = (Number(data.totalPutVolume) / Number(data.totalCallVolume));
     data.time = this.formatAMPM(new Date());
 
-    this.AllNiftyData=[...this.AllNiftyData,data]
+    this.AllNiftyData = [...this.AllNiftyData, data]
+    this.AllNiftyChartPCRData = [...this.AllNiftyChartPCRData, [data.time, data.PCROI]];
+    this.AllNiftyChartOIData = [...this.AllNiftyChartOIData, [data.time, data.totalCallOI, data.totalPutOI]];
+    // console.log(this.AllNiftyChartPCRData);
 
-    this.AllNiftyChartPCRData=[...this.AllNiftyChartPCRData,[data.time,data.PCROI]];
-    this.AllNiftyChartOIData=[...this.AllNiftyChartOIData,[data.time,data.totalCallOI,data.totalPutOI]];
+    this.store.dispatch(new NiftySuccessAction({ Data: this.AllNiftyData, NiftyPCRData: this.AllNiftyChartPCRData, NiftyOIData: this.AllNiftyChartOIData }))
+    // this.store.dispatch(new NiftyPCRChartSuccessAction({NiftyPCRData:this.AllNiftyChartPCRData,NiftyOIData:this.AllNiftyChartOIData}))
 
-    this.store.dispatch(new NiftySuccessAction({Data:this.AllNiftyData}))
-    this.store.dispatch(new NiftyPCRChartSuccessAction({PCRData:this.AllNiftyChartPCRData,OIData:this.AllNiftyChartOIData}))
-  
   }
 
   formatAMPM(date: Date) {

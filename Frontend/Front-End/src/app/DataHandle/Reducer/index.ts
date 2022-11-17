@@ -26,3 +26,5 @@ export const getNiftyOIChartData=createSelector(getNiftyData,fromNifty.getNiftyO
 export const getBankNiftyLoading=createSelector(getBankNiftyData,fromBankNifty.getLoading);
 export const getBankNiftyLoaded=createSelector(getBankNiftyData,fromBankNifty.getLoaded);
 export const getBankNiftyPCR=createSelector(getBankNiftyData,fromBankNifty.getBankNiftyPCR);
+export const getBankNiftyPCRChartData=createSelector(getBankNiftyData,fromBankNifty.getBankNiftyPCRChartData);
+export const getBankNiftyOIChartData=createSelector(getBankNiftyData,fromBankNifty.getBankNiftyOIChartData);

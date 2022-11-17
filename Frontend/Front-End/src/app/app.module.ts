@@ -19,6 +19,7 @@ import { rootReducer } from './DataHandle/Reducer';
 import { NgApexchartsModule } from "ng-apexcharts";
 import { GoogleChartsModule } from 'angular-google-charts';
 import { StoreModule } from '@ngrx/store';
+import { BankNiftyChartComponent } from './Components/bank-nifty-chart/bank-nifty-chart.component';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { StoreModule } from '@ngrx/store';
     NavbarComponent,
     BankNiftyComponent,
     NiftyChartComponent,
+    BankNiftyChartComponent,
   ],
   imports: [
     BrowserModule,
