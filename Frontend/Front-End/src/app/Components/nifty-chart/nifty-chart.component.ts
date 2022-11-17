@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Chart } from 'chart.js';
+import { from, of, tap, toArray } from 'rxjs';
+import { NiftyPCR } from 'src/app/Models/Nifty';
 import { NiftyDataServiceService } from 'src/services/NiftyService/nifty-data-service.service';
 
 
@@ -11,31 +13,12 @@ import { NiftyDataServiceService } from 'src/services/NiftyService/nifty-data-se
 })
 export class NiftyChartComponent implements OnInit {
 
-  pcrData = new Array();
-  cepeData = new Array();
+  loading:Boolean=false;
+  loaded:Boolean=false;
 
+  PCRChartData: any = []
   myTitle: any = "Put Call Ratio"
   myType: any = "LineChart"
-
-  myPcrChart: any = [];
-  myCEPEChart: any = [];
-
-
-
-  constructor(
-    private niftyService: NiftyDataServiceService
-  ) {
-  }
-
-  ngOnInit(): void {
-    
-  }
-
-  setChartData() {
-    // this.myPcrChart = this.niftyService.pcrData;
-    // this.myCEPEChart = this.niftyService.cepeData;
-      console.log(this.myPcrChart, "-");
-  }
 
   myOptions = {
     colors: ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6'],
@@ -49,25 +32,70 @@ export class NiftyChartComponent implements OnInit {
     pointSize: 5
   };
 
-  myCEPEOptions = {
-    colors: ['red', 'green', "black"],
-    is3D: true,
-    hAxis: {
-      title: 'Put Open Interest'
-    },
-    vAxis: {
-      title: 'Call Open Interest'
-    },
-    pointSize: 5
-  };
-
   pcrchartColumns = [
     "Time", "PCR"
   ];
 
-  peoichartColumns = [
-    "Time", "PE", "CE"
+  // call put open interest
+  OICallPUTChartData:any=[]
+  OITitle: any = "OI Call Put"
+  OIType: any = "LineChart"
+  OIOptions = {
+    colors: ['#e0440e', 'green', 'red', '#f3b49f', '#f6c7b6'],
+    is3D: true,
+    hAxis: {
+      title: 'Time'
+    },
+    vAxis: {
+      title: 'Open Interest'
+    },
+    pointSize: 5
+  };
+
+  OIchartColumns = [
+    "Time", "Call OI","Put OI"
   ];
 
+  
+
+
+  constructor(
+    private niftyService: NiftyDataServiceService
+  ) {
+
+  }
+
+
+  ngOnInit(): void {
+
+    const Observer$ = this.niftyService.getNiftyData();
+
+    const ob1$ = Observer$[0];
+    const ob2$=Observer$[1];
+    const ob3$ = Observer$[3];
+    const ob4$=Observer$[4];
+
+    ob1$.subscribe(
+      (data:Boolean)=>this.loading=data
+    )
+    ob2$.subscribe(
+      (data:Boolean)=>this.loaded=data
+    )
+
+    ob3$.subscribe(
+      (data)=>{
+        this.PCRChartData=data;
+      }
+    )
+    ob4$.subscribe(
+      (data)=>{
+        this.OICallPUTChartData=data;
+      }
+    )
+
+  }
+
+
+  
 
 }

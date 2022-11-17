@@ -1,17 +1,21 @@
 import { Action } from "../../Actions";
-import { NIFTY_REQUEST, NIFTY_SUCCESS } from "../../Actions/NiftyActions";
+import { NIFTY_PCR_CHART_REQUEST, NIFTY_PCR_CHART_SUCCESS, NIFTY_REQUEST, NIFTY_SUCCESS } from "../../Actions/NiftyActions";
 
 export interface NiftyReducerState{
     loading:boolean;
     loaded:boolean;
     NiftyPCRData:any[];
+    NiftyPCRChartData:any[];
+    NiftyOIChartData:any[];
 }
 
 
 const initalState:NiftyReducerState={
     loading:false,
     loaded:false,
-    NiftyPCRData:[]
+    NiftyPCRData:[],
+    NiftyPCRChartData:[],
+    NiftyOIChartData:[]
 }
 
 
@@ -29,6 +33,14 @@ export function NiftyReducer(state=initalState,action:Action){
             
             return {...state,loading:false,loaded:true,NiftyPCRData:newData};
         }
+        case NIFTY_PCR_CHART_REQUEST:{
+            return {...state,loading:true,loaded:false};
+        }
+        case NIFTY_PCR_CHART_SUCCESS:{
+            const newPCRData=action.payload.PCRData;
+            const newOIData=action.payload.OIData;
+            return {...state,loading:false,loaded:true,NiftyPCRChartData:newPCRData,NiftyOIChartData:newOIData}
+        }
 
         default:{
             return state;
@@ -43,3 +55,6 @@ export function NiftyReducer(state=initalState,action:Action){
 export const getLoading=(state:NiftyReducerState)=>state.loading;
 export const getLoaded=(state:NiftyReducerState)=>state.loaded;
 export const getNiftyPCR=(state:NiftyReducerState)=>state.NiftyPCRData;
+export const getNiftyPCRChartData=(state:NiftyReducerState)=>state.NiftyPCRChartData;
+export const getNiftyOIChartData=(state:NiftyReducerState)=>state.NiftyOIChartData;
+

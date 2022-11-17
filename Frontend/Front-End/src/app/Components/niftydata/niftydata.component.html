@@ -21,11 +21,6 @@
             </thead>
             <br>
             <tbody>
-                <ng-container *ngIf="loading==false && loaded==false">
-                    <div class="startingData">
-                        <h1>Please Click Refresh Button</h1>
-                    </div>
-                </ng-container>
                 <tr *ngIf="loading==true && loaded==false" (rowspan)="3">
                     <td colspan="3">
                         <div class="spinner">
@@ -47,5 +42,5 @@
         </table>
     </mat-card>
     <br><br>
-    <!-- <app-nifty-chart></app-nifty-chart> -->
+    <app-nifty-chart></app-nifty-chart>
 </div>

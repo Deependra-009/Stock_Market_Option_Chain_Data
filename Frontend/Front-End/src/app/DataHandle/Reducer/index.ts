@@ -18,6 +18,8 @@ export const getBankNiftyData=(state:RootReducerState)=>state.BankNifty;
 export const getNiftyLoading=createSelector(getNiftyData,fromNifty.getLoading);
 export const getNiftyLoaded=createSelector(getNiftyData,fromNifty.getLoaded);
 export const getNiftyPCR=createSelector(getNiftyData,fromNifty.getNiftyPCR);
+export const getNiftyPCRChartData=createSelector(getNiftyData,fromNifty.getNiftyPCRChartData);
+export const getNiftyOIChartData=createSelector(getNiftyData,fromNifty.getNiftyOIChartData);
 
 //--------------------------------------------------------------------------
 

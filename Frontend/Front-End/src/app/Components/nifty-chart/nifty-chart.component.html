@@ -1,14 +1,15 @@
-<!-- <mat-card>
+<mat-card *ngIf="loaded">
     <div class="chart-div">
         <div class="chart-page">
-            <google-chart title="Put Call Ratio" [type]="myType" [data]="myPcrChart" [columns]="pcrchartColumns" [width]="1000"
+            <google-chart [title]="myTitle" [type]="myType" [data]="PCRChartData" [columns]="pcrchartColumns" [width]="1500"
                 [height]="800" [options]="myOptions">
             </google-chart>
         </div>
         <div class="chart-page">
-            <google-chart title="Put Open Interest" [type]="myType" [data]="myCEPEChart" [columns]="peoichartColumns" [width]="1000"
-                [height]="600" [options]="myCEPEOptions">
+            <google-chart [title]="OITitle" [type]="myType" [data]="OICallPUTChartData" [columns]="OIchartColumns" [width]="1500"
+                [height]="800" [options]="OIOptions">
             </google-chart>
         </div>
     </div>
-</mat-card> -->
+</mat-card>
+

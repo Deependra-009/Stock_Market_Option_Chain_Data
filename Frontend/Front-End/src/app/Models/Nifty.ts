@@ -8,3 +8,12 @@ export interface NiftyPCR{
     time:String;
 }
 
+export interface NiftyPCRChart{
+      
+}
+
+export interface NiftyOIChart{
+    totalCallOI:Number;
+    totalPutOI:Number;
+    time:Number;
+}

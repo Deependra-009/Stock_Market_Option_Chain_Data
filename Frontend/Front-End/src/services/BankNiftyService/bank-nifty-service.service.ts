@@ -31,6 +31,7 @@ export class BankNiftyServiceService {
 
   updateBankNiftyAllData(force=false){
 
+
     const loading$ = this.store.select(getBankNiftyLoading);
     const loaded$ = this.store.select(getBankNiftyLoaded);
     const bankNiftyData=this.store.select(getBankNiftyPCR);
@@ -39,7 +40,7 @@ export class BankNiftyServiceService {
     ).subscribe((data)=>{
       this.AllBankNiftyData=data;
     })
-    console.log(force);
+    // console.log(force);
     
     combineLatest([loading$, loaded$])
     .pipe(
@@ -55,7 +56,7 @@ export class BankNiftyServiceService {
             )
             .subscribe(
               (res: any) => {
-                console.log(res);
+                // console.log(res);
                 this.convertData(res);
                
               },
@@ -72,7 +73,7 @@ export class BankNiftyServiceService {
 
   convertData(tempData: any) {
     
-    // console.log(tempData);
+    if(tempData==undefined) return;
     
     let data = {
       totalCallOI: 0,
