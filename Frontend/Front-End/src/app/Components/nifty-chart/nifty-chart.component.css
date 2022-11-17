@@ -1,0 +1,9 @@
+.chart-page{
+    display: flex;
+    justify-content: center;
+
+}
+.chart-div{
+    display: flex;
+    flex-direction: column;
+}
