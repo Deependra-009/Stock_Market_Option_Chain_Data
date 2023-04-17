@@ -18,7 +18,7 @@ export class AppComponent {
 
   ngOnInit(): void {
 
-    const UpdateData=interval(180000);
+    const UpdateData=interval(10000);
     UpdateData.subscribe((data)=>{
       this.getData();
     })
@@ -28,7 +28,7 @@ export class AppComponent {
 
   getData() {
     this.niftyData.updateNiftyAllData(true);
-    this.bankNiftyData.updateBankNiftyAllData(true);
+    // this.bankNiftyData.updateBankNiftyAllData(true);
   }
 
 
